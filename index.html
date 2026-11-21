@@ -1,130 +1,116 @@
-<!DOCTYPE html>
-<!-- saved from url=(0068)file:///Users/jaredyeoward/Downloads/FilmLab_Mobile_Cohesive_v2.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Luma — Photo Editor</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Film Lab — Film Looks</title>
 <style>
-:root{color-scheme:dark;--bg:#111315;--panel:#1b1f22;--line:#343b40;--ink:#f4f1eb;--muted:#abb3b6;--accent:#d9bd9b}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,.upload{border:0;border-radius:8px;padding:10px 13px;background:var(--accent);color:#171513;font:600 13px inherit;cursor:pointer}button{font-size:13px;font-weight:700}.secondary{background:#343b40;color:var(--ink)}.tag{font-size:11px;color:var(--muted);font-weight:400;border:1px solid var(--line);padding:3px 7px;border-radius:12px}.app{height:100dvh;display:flex;flex-direction:column;overflow:hidden}.topbar{height:62px;flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid var(--line)}.brand{font-size:24px;font-weight:750;margin-right:auto}.layout{display:grid;grid-template-columns:265px minmax(0,1fr) 205px;min-height:0;flex:1}.adjustments,.looks{overflow:auto;min-height:0;background:var(--panel);padding:14px;border-right:1px solid var(--line)}.looks{border-right:0;border-left:1px solid var(--line)}.side-title{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:15px;margin-bottom:8px}.side-title button{padding:6px 10px}.panel{border-top:1px solid var(--line);padding:15px 0}.panel h2,.looks h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 12px;color:#ddd}.controls{display:block}.control{padding:7px 0}label{display:flex;justify-content:space-between;gap:10px;font-size:12px;margin-bottom:6px}output{color:var(--accent);font-variant-numeric:tabular-nums}input[type=range]{width:100%;accent-color:var(--accent)}.styles{display:flex;flex-direction:column;gap:8px}.style-btn{text-align:left;background:#2b3033;color:var(--ink);padding:13px 12px;border:1px solid #42494d}.style-btn.active{border-color:var(--accent);background:#554838;color:#fff}.style-description{font-size:12px;color:var(--muted);line-height:1.5;margin-top:15px}.viewer{min-width:0;min-height:0;display:flex;flex-direction:column;background:#101112}.viewer-head,.viewer-foot{display:flex;align-items:center;gap:8px;padding:9px 15px;color:var(--muted);font-size:12px}.viewer-head{justify-content:space-between}.viewer-foot button{padding:6px 12px;font-size:15px}.image-viewport{flex:1;min-height:0;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:zoom-in}.image-viewport.zoomed{cursor:grab}.image-viewport.dragging{cursor:grabbing}.image-transform{width:100%;height:100%;display:flex;align-items:center;justify-content:center;transform-origin:center center;will-change:transform}.image-transform img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;user-select:none;-webkit-user-drag:none;pointer-events:none}.status{min-height:24px;padding:0 15px 7px;color:var(--muted);font-size:11px}.source-hidden{display:none}[hidden]{display:none!important}
-@media(max-width:800px){.app{height:100dvh}.topbar{height:54px;padding:0 10px;gap:7px}.brand{font-size:20px}.layout{display:flex;flex-direction:column}.viewer{order:0;flex:0 0 48dvh}.looks{order:1;overflow:visible;padding:10px;border:0;border-top:1px solid var(--line)}.looks h2{margin-bottom:7px}.styles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.style-btn{text-align:center;padding:10px 3px;font-size:11px}.style-description{display:none}.adjustments{order:2;flex:1;overflow:auto;padding:10px;border:0;border-top:1px solid var(--line)}.panel{padding:10px 0}.viewer-head{padding:5px 10px}.viewer-foot{padding:5px 10px}.viewer-foot span{font-size:10px}.status{font-size:10px;padding:0 10px 3px}.side-title{position:sticky;top:-10px;background:var(--panel);padding:8px 0;z-index:2}}
-@media(max-width:420px){.styles{grid-template-columns:repeat(2,minmax(0,1fr))}.viewer{flex-basis:44dvh}.brand .tag{display:none}}
-</style>
-<style>
-/* Luma phone workspace: fixed image, translucent controls, swipeable tools */
-@media(max-width:800px){
- html,body{height:100%;overflow:hidden}
- .app{height:100dvh;overflow:hidden}
- .layout{position:relative;display:block;flex:1;min-height:0;overflow:hidden}
- .viewer{position:absolute;inset:0 0 74px;display:flex;flex-direction:column;background:#101112}
- .image-viewport{flex:1;min-height:0}
- .viewer-head{flex-shrink:0}
- .viewer-foot{flex-shrink:0}
- .looks,.adjustments{position:absolute;z-index:8;left:12px;right:12px;bottom:86px;top:auto;
-  max-height:min(46dvh,390px);overflow-y:auto;overscroll-behavior:contain;
-  background:rgba(29,32,35,.76);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
-  border:1px solid rgba(255,255,255,.16);border-radius:17px;padding:14px 16px;
-  box-shadow:0 12px 35px rgba(0,0,0,.38)}
- .looks:not(.mobile-open),.adjustments:not(.mobile-open){display:none!important}
- .adjustments .panel{display:none}
- .adjustments .panel.mobile-section-active{display:block}
- .adjustments .side-title{position:static;background:transparent;padding:0 0 6px}
- .looks .styles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
- .looks .style-description{display:block}
- .panel{border:0;padding:6px 0}
- .panel h2{margin-bottom:8px}
- .control{padding:7px 0}
- input[type=range]{min-height:28px}
- .mobile-toolstrip{position:absolute;bottom:0;left:0;right:0;z-index:12;
-  display:flex;gap:5px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;
-  padding:9px 10px calc(10px + env(safe-area-inset-bottom));height:86px;
-  background:rgba(23,26,28,.96);border-top:1px solid var(--line)}
- .mobile-toolstrip::-webkit-scrollbar{display:none}
- .mobile-tool{flex:0 0 68px;min-width:68px;background:transparent;color:#d6d8d8;
-  display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 3px;
-  border:1px solid transparent;border-radius:12px;font-size:10px;white-space:nowrap}
- .mobile-tool .tool-icon{font-size:21px;line-height:24px;font-weight:400}
- .mobile-tool.selected{background:rgba(217,189,155,.16);border-color:rgba(217,189,155,.55);color:var(--accent)}
- .mobile-tool.compare{color:var(--accent)}
- .mobile-tool.compare.is-held{background:var(--accent);color:#161513}
- .topbar{height:54px}
- .viewer-head{padding:6px 12px}
- .viewer-foot{padding:5px 12px}
- .status{padding:0 12px 5px}
-}
-@media(min-width:801px){.mobile-toolstrip{display:none}}
-</style>
+:root{color-scheme:dark;--bg:#101214;--panel:#1b2023;--line:#343b40;--ink:#f4f1eb;--muted:#aeb7bb;--accent:#d9bd9b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:1080px;margin:auto;padding:24px 16px 48px}h1{font-size:27px;margin:0}p{color:var(--muted);margin:6px 0 18px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:16px;margin:14px 0}
+input[type=file]{width:100%;padding:12px;border:1px dashed #fff;border-radius:10px;color:var(--muted);background:#151719}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}figure{margin:0;min-width:0}figure img{width:100%;height:auto;max-height:65vh;object-fit:contain;background:#08090a;border:2px solid #fff;border-radius:9px;display:block}figcaption{font-size:12px;letter-spacing:.06em;color:var(--muted);margin:0 0 7px}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px 20px}.control{padding:8px 0}label{display:flex;justify-content:space-between;gap:10px;font-size:14px;margin-bottom:5px}output{color:var(--accent);font-variant-numeric:tabular-nums}input[type=range]{width:100%;accent-color:var(--accent)}
+.styles{display:flex;flex-wrap:wrap;gap:9px}.style-btn{min-width:145px}.style-btn.active{outline:2px solid #f4f1eb;outline-offset:2px}.style-description{margin:12px 0 0;font-size:13px}button{background:var(--accent);color:#171513;border:0;border-radius:9px;padding:11px 15px;font-weight:700;font-size:14px;cursor:pointer}.secondary{background:#343b40;color:var(--ink)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.status{font-size:14px;color:var(--muted);min-height:22px}.tag{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:3px 9px;font-size:12px;color:#d7c6b2;vertical-align:middle}
+h2{font-size:16px;margin:0 0 8px}small{color:var(--muted)}[hidden]{display:none!important}
 
-<style id="luma-unified-responsive">
-/* One responsive editor: desktop sidebars, mobile floating editing tools. */
-@media (min-width:801px) {
-  .layout {grid-template-columns:minmax(240px,285px) minmax(0,1fr) minmax(190px,245px)}
-  .adjustments,.looks {scrollbar-width:thin}
-  .viewer {background:#f6f6f6}
-  .image-viewport {background:#fff}
-  .image-transform img {box-shadow:0 5px 24px rgba(0,0,0,.13)}
-  .topbar {background:#171a1c}
+.saved-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.saved-chip{background:#343b40;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:8px 12px}
+.batch-box{border-top:1px solid var(--line);margin-top:16px;padding-top:14px}
+button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:600px){
+ main{padding:12px 10px 30px;max-width:620px}h1{font-size:24px}
+ .panel{padding:13px;margin:10px 0;border-radius:13px}
+ .grid{grid-template-columns:1fr;gap:18px}
+ figure img{max-height:none;border-width:2px;border-color:#fff}
+ .controls{grid-template-columns:1fr;gap:2px}.control{padding:10px 0}
+ .styles{display:grid;grid-template-columns:1fr 1fr}
+ .style-btn{min-width:0;width:100%;padding:13px 8px}
+ .actions{display:grid;grid-template-columns:1fr}
+ .actions button{width:100%;min-height:44px}
+ input[type=file]{min-height:48px}
 }
-@media (max-width:800px) {
-  .app {height:100dvh;height:100svh}
-  .topbar {padding-top:env(safe-area-inset-top,0px);height:calc(54px + env(safe-area-inset-top,0px))}
-  .layout {padding-bottom:env(safe-area-inset-bottom,0px)}
-  .mobile-toolstrip {bottom:calc(12px + env(safe-area-inset-bottom,0px))!important}
-  .adjustments,.looks {bottom:calc(78px + env(safe-area-inset-bottom,0px))!important}
-  .image-viewport {touch-action:none}
-}
-</style>
-<style id="luma-frame-colours">
-/* Preview surround only; does not affect exported image pixels. */
-.image-viewport{background:#fff!important}
-.image-viewport[data-frame="grey"]{background:#858585!important}
-.image-viewport[data-frame="black"]{background:#111!important}
-.image-viewport{transition:background-color .15s ease}
-</style>
-<style>#after:not([src]){display:none}</style></head>
-<body><main class="app">
-<header class="topbar"><div class="brand">Luma <span class="tag">Film editor</span></div><label class="upload" for="photo">Open photo</label><input id="photo" type="file" accept="image/*,.heic,.heif" hidden><button id="save" type="button">Export JPEG</button></header>
-<div class="layout">
-<nav class="mobile-toolstrip" aria-label="Photo editing tools">
- <button type="button" class="mobile-tool compare" id="mobileCompare" aria-label="Hold to see original photo"><span class="tool-icon">◐</span><span>Before</span></button>
- <button type="button" class="mobile-tool" data-mobile-panel="looks"><span class="tool-icon">▦</span><span>Looks</span></button>
- <button type="button" class="mobile-tool" data-mobile-panel="0"><span class="tool-icon">◉</span><span>Strength</span></button>
- <button type="button" class="mobile-tool" data-mobile-panel="1"><span class="tool-icon">☼</span><span>Light</span></button>
- <button type="button" class="mobile-tool" data-mobile-panel="2"><span class="tool-icon">◈</span><span>Colour</span></button>
- <button type="button" class="mobile-tool" data-mobile-panel="3"><span class="tool-icon">⌁</span><span>Curves</span></button>
- <button type="button" class="mobile-tool" data-mobile-panel="4"><span class="tool-icon">⁙</span><span>Grain</span></button>
-</nav>
+</style></head>
+<body><main>
+<h1>Film Lab <span class="tag">Four film looks</span></h1>
+<p>Your saved Film Lab look. Upload JPEG, PNG, WebP or iPhone HEIC/HEIF photos, compare before and after, then export a full-resolution JPEG.</p>
+<section class="panel">
+<label for="photo">Choose a photo — JPEG, PNG, WebP or HEIC/HEIF</label>
+<input id="photo" type="file" accept="image/*,.heic,.heif" multiple>
+<div id="status" class="status" aria-live="polite">Choose one photo or select several to batch edit.</div>
+</section>
 
-<aside class="adjustments"><div class="side-title">Adjustments <button id="reset" class="secondary" type="button">Reset</button></div>
-<section class="panel"><h2>Look strength</h2><div class="control"><label for="opacity">Film look opacity <output>100%</output></label><input id="opacity" type="range" min="0" max="100" value="100"></div></section>
-<section class="panel"><h2>Light</h2><div class="controls">
-<div class="control"><label for="exposure">Exposure <output>.00</output></label><input id="exposure" type="range" min="-100" max="100" value="-1"></div>
-<div class="control"><label for="contrast">Contrast <output>+16</output></label><input id="contrast" type="range" min="-100" max="100" value="3"></div>
-<div class="control"><label for="highlights">Highlights <output>-18</output></label><input id="highlights" type="range" min="-100" max="100" value="0"></div>
-<div class="control"><label for="shadows">Shadows <output>-26</output></label><input id="shadows" type="range" min="-100" max="100" value="-47"></div>
-<div class="control"><label for="whites">Whites <output>+12</output></label><input id="whites" type="range" min="-100" max="100" value="0"></div>
-<div class="control"><label for="blacks">Blacks <output>-14</output></label><input id="blacks" type="range" min="-100" max="100" value="-7"></div>
-</div></section>
-<section class="panel"><h2>Colour</h2><div class="controls">
-<div class="control"><label for="temperature">Temperature <output>3850 K</output></label><input id="temperature" type="range" min="2000" max="12000" value="6489"></div>
-<div class="control"><label for="tint">Tint <output>+62</output></label><input id="tint" type="range" min="-100" max="100" value="58"></div>
-<div class="control"><label for="vibrance">Vibrance <output>-1</output></label><input id="vibrance" type="range" min="-100" max="100" value="2"></div>
-<div class="control"><label for="saturation">Saturation <output>-2</output></label><input id="saturation" type="range" min="-100" max="100" value="3"></div>
-<div class="control"><label for="yellowLum">Yellow luminance <output>0</output></label><input id="yellowLum" type="range" min="-100" max="100" value="5"></div>
-</div></section>
-<section class="panel"><h2>RGB point-curve adjustments</h2><div class="controls">
-<div class="control"><label for="redCurve">Red curve <output>+6</output></label><input id="redCurve" type="range" min="-50" max="50" value="7"></div>
-<div class="control"><label for="greenCurve">Green curve <output>-6</output></label><input id="greenCurve" type="range" min="-50" max="50" value="0"></div>
-<div class="control"><label for="blueCurve">Blue curve <output>+2</output></label><input id="blueCurve" type="range" min="-50" max="50" value="-8"></div>
-</div></section>
-<section class="panel"><h2>Grain</h2><div class="controls">
-<div class="control"><label for="grain">Amount <output>+18</output></label><input id="grain" type="range" min="0" max="100" value="32"></div>
-<div class="control"><label for="grainSize">Size <output>+34</output></label><input id="grainSize" type="range" min="0" max="100" value="37"></div>
-<div class="control"><label for="roughness">Roughness <output>+42</output></label><input id="roughness" type="range" min="0" max="100" value="49"></div>
-</div></section>
-</aside><section class="viewer"><div class="viewer-head"><span id="viewLabel">A LOOK</span><span id="zoomLabel">Fit · hold for original</span></div><div id="imageViewport" class="image-viewport"><div id="imageTransform" class="image-transform"><img id="after" alt="Film-look edited photo"></div></div><div class="viewer-foot"><button id="fitButton" class="secondary" type="button">Fit</button><button id="zoomOut" class="secondary" type="button">−</button><button id="zoomIn" class="secondary" type="button">+</button><span>Double-click to zoom · drag to pan · hold for before</span></div><div id="status" class="status" aria-live="polite">Ready to edit.</div></section>
-<aside class="looks"><h2>Film looks</h2><div class="styles" role="group" aria-label="Film looks"><button type="button" class="style-btn secondary" data-style="portra">Warm</button><button type="button" class="style-btn secondary" data-style="bw">Classic Black &amp; White</button><button type="button" class="style-btn active" data-style="natural">A Look</button><button type="button" class="style-btn secondary" data-style="green">Green Vibe</button></div><p class="style-description" id="styleDescription">Choose a film look to start.</p></aside></div>
-<div id="workspace" hidden></div><div class="source-hidden"><img id="before" alt="Original photo"></div>
-<canvas id="canvas" hidden="" width="788" height="1400"></canvas>
+<section class="panel" id="quickTools">
+  <h2>Your Film Lab tools</h2>
+  <div class="actions">
+    <button id="savePreset" type="button">Save current look</button>
+    <button id="toggleFavourite" class="secondary" type="button">☆ Add current look to favourites</button>
+  </div>
+  <div id="savedPresets" class="saved-list" aria-live="polite"></div>
+  <div class="batch-box">
+    <strong>Batch editing</strong>
+    <p class="style-description">Select several photos above, choose a look, then export the whole set with the same settings.</p>
+    <div id="batchInfo" class="status">No batch selected.</div>
+    <button id="exportBatch" class="secondary" type="button" disabled>Export all selected photos</button>
+  </div>
+</section>
+<section id="workspace" hidden>
+<div class="panel">
+<div class="grid">
+<figure><figcaption>BEFORE · ORIGINAL</figcaption><img id="before" alt="Original photo"></figure>
+<figure><figcaption>AFTER · FILM LOOK</figcaption><img id="after" alt="Film-look edited photo"></figure>
+</div>
+<div class="actions"><button id="save">Export edited JPEG</button><button class="secondary" id="reset">Reset adjustments</button></div>
+</div>
+
+<div class="panel">
+<h2>Choose your film look</h2>
+<div class="styles" role="group" aria-label="Film looks">
+<button type="button" class="style-btn active" data-style="portra">Film</button>
+<button type="button" class="style-btn secondary" data-style="bw">Classic Black &amp; White</button>
+<button type="button" class="style-btn secondary" data-style="natural">A Look</button>
+<button type="button" class="style-btn secondary" data-style="green">Green Vibe</button>
+</div>
+<p class="style-description" id="styleDescription">Soft, warm colour with gentle contrast and film grain.</p>
+</div>
+<div class="panel">
+<h2>Look strength</h2>
+<div class="control"><label for="opacity">Film look opacity <output>100%</output></label><input id="opacity" type="range" min="0" max="100" value="100"></div>
+</div>
+<div class="panel">
+<h2>Light</h2><div class="controls">
+<div class="control"><label for="exposure">Exposure <output>-.01</output></label><input id="exposure" type="range" min="-100" max="100" value="-1"></div>
+<div class="control"><label for="contrast">Contrast <output>+3</output></label><input id="contrast" type="range" min="-100" max="100" value="3"></div>
+<div class="control"><label for="highlights">Highlights <output>0</output></label><input id="highlights" type="range" min="-100" max="100" value="0"></div>
+<div class="control"><label for="shadows">Shadows <output>-47</output></label><input id="shadows" type="range" min="-100" max="100" value="-47"></div>
+<div class="control"><label for="whites">Whites <output>0</output></label><input id="whites" type="range" min="-100" max="100" value="0"></div>
+<div class="control"><label for="blacks">Blacks <output>-7</output></label><input id="blacks" type="range" min="-100" max="100" value="-7"></div>
+</div></div>
+<div class="panel">
+<h2>Colour</h2><div class="controls">
+<div class="control"><label for="temperature">Temperature <output>6489 K</output></label><input id="temperature" type="range" min="2000" max="12000" value="6489"></div>
+<div class="control"><label for="tint">Tint <output>+58</output></label><input id="tint" type="range" min="-100" max="100" value="58"></div>
+<div class="control"><label for="vibrance">Vibrance <output>+2</output></label><input id="vibrance" type="range" min="-100" max="100" value="2"></div>
+<div class="control"><label for="saturation">Saturation <output>+3</output></label><input id="saturation" type="range" min="-100" max="100" value="3"></div>
+<div class="control"><label for="yellowLum">Yellow luminance <output>+5</output></label><input id="yellowLum" type="range" min="-100" max="100" value="5"></div>
+</div></div>
+<div class="panel">
+<h2>RGB point-curve adjustments</h2>
+<small>Approximate channel-curve controls based on the screenshot. The exact curve points aren't visible in the reference, so these are adjustable channel shaping controls.</small>
+<div class="controls">
+<div class="control"><label for="redCurve">Red curve <output>+7</output></label><input id="redCurve" type="range" min="-50" max="50" value="7"></div>
+<div class="control"><label for="greenCurve">Green curve <output>0</output></label><input id="greenCurve" type="range" min="-50" max="50" value="0"></div>
+<div class="control"><label for="blueCurve">Blue curve <output>-8</output></label><input id="blueCurve" type="range" min="-50" max="50" value="-8"></div>
+</div></div>
+<div class="panel">
+<h2>Grain</h2><div class="controls">
+<div class="control"><label for="grain">Amount <output>32</output></label><input id="grain" type="range" min="0" max="100" value="32"></div>
+<div class="control"><label for="grainSize">Size <output>37</output></label><input id="grainSize" type="range" min="0" max="100" value="37"></div>
+<div class="control"><label for="roughness">Roughness <output>49</output></label><input id="roughness" type="range" min="0" max="100" value="49"></div>
+</div></div>
+</section>
+<canvas id="canvas" hidden></canvas>
 <p><small>HEIC/HEIF files are decoded in your browser using a modern HEIF decoder when native browser support is unavailable. An internet connection is needed to load the decoder the first time. Your photo stays on your device.</small></p>
 </main>
 <script>
@@ -137,7 +123,7 @@ const presets={
  bw:{...defaults,exposure:0,contrast:24,shadows:-28,whites:12,blacks:-18,temperature:5500,tint:0,vibrance:-100,saturation:-100,yellowLum:0,redCurve:0,greenCurve:0,blueCurve:0,grain:24,grainSize:42,roughness:55},
  green:{...defaults,exposure:2,contrast:16,highlights:-7,shadows:-11,whites:4,blacks:13,temperature:5072,tint:71,vibrance:-3,saturation:-8,yellowLum:-8,redCurve:-24,greenCurve:1,blueCurve:-5,grain:20,grainSize:34,roughness:48}
 };
-const descriptions={portra:'Warm: a soft, warm colour look with gentle contrast and film grain.',natural:'A Look: a slightly bluer 3850 K balance with +62 tint, controlled colour, defined contrast and restrained grain.',bw:'Timeless monochrome with deeper blacks, crisp midtone contrast and subtle grain.',green:'Green Vibe: subtle green-leaning colour character with controlled saturation, defined contrast and textured grain, based on your latest slider settings.'};
+const descriptions={portra:'Film: a soft, warm colour look with gentle contrast and film grain.',natural:'A Look: a slightly bluer 3850 K balance with +62 tint, controlled colour, defined contrast and restrained grain.',bw:'Timeless monochrome with deeper blacks, crisp midtone contrast and subtle grain.',green:'Green Vibe: subtle green-leaning colour character with controlled saturation, defined contrast and textured grain, based on your latest slider settings.'};
 let source=null,fullSource=null,filename='photo',queued=false,currentStyle='portra';
 function status(t){$('status').textContent=t}
 function clamp(x){return Math.max(0,Math.min(1,x))}
@@ -193,7 +179,7 @@ function renderTo(c,imSource){
  }
  cx.putImageData(im,0,0);
 }
-function render(){if(!source||queued)return;queued=true;requestAnimationFrame(()=>{queued=false;renderTo(canvas,source);if(!holding)$('after').src=canvas.toDataURL('image/jpeg',.9)})}
+function render(){if(!source||queued)return;queued=true;requestAnimationFrame(()=>{queued=false;renderTo(canvas,source);$('after').src=canvas.toDataURL('image/jpeg',.9)})}
 async function loadHeif(file){
  // Prefer the browser's native decoder. Some iPhone HEIC variants need a newer HEIF codec.
  try { return await createImageBitmap(file); } catch(nativeError) {}
@@ -222,37 +208,31 @@ async function loadHeif(file){
  throw Error('This HEIC/HEIF file could not be decoded. Try exporting it as JPEG from Photos, or check that you are online so the HEIC decoder can load.');
 }
 async function load(file){
- if(!file)return;
- status('Opening photo…');
+ if(!file)return;source=null;$('workspace').hidden=true;status('Loading photo…');
  try{
-  const url=URL.createObjectURL(file);
-  const img=new Image();
-  try{
-   await new Promise((resolve,reject)=>{
-    img.onload=resolve;
-    img.onerror=()=>reject(Error('Could not decode photo. Try a JPEG.'));
-    img.src=url;
-   });
-   const w=img.naturalWidth,h=img.naturalHeight;
-   if(!w||!h)throw Error('Photo dimensions unavailable');
-   const scale=Math.min(1,1400/Math.max(w,h));
-   const small=document.createElement('canvas');
-   small.width=Math.max(1,Math.round(w*scale));
-   small.height=Math.max(1,Math.round(h*scale));
-   small.getContext('2d').drawImage(img,0,0,small.width,small.height);
-   source=small;fullSource=small;
-   filename=(file.name||'photo').replace(/\\.[^.]+$/,'');
-   $('before').src=small.toDataURL('image/jpeg',.9);
-   setZoom(1);labels();render();
-   status('Photo loaded: '+w+' × '+h);
-  }finally{setTimeout(()=>URL.revokeObjectURL(url),30000)}
- }catch(e){status('Could not open photo: '+(e.message||String(e)))}
+  let bmp;
+  const nm=(file.name||'').toLowerCase(),ty=(file.type||'').toLowerCase();
+  const isHeif=ty.includes('heic')||ty.includes('heif')||/\.hei[cf]$/.test(nm);
+  if(isHeif){status('Opening iPhone HEIC photo…');bmp=await loadHeif(file);}
+  else {bmp=await createImageBitmap(file);}
+  fullSource=bmp;filename=(file.name||'photo').replace(/\.[^.]+$/,'');
+  const scale=Math.min(1,1400/Math.max(bmp.width,bmp.height)),small=document.createElement('canvas');
+  small.width=Math.max(1,Math.round(bmp.width*scale));small.height=Math.max(1,Math.round(bmp.height*scale));
+  small.getContext('2d').drawImage(bmp,0,0,small.width,small.height);source=await createImageBitmap(small);
+  $('before').src=small.toDataURL('image/jpeg',.9);$('workspace').hidden=false;labels();render();status('Loaded. Your latest screenshot settings are applied at 100% opacity.');
+ }catch(e){status('Could not open photo: '+(e.message||'unsupported format'))}
 }
 
-$('photo').addEventListener('change',async e=>{if(e.target.files?.[0])await load(e.target.files[0]);});
+let batchFiles=[];
+$('photo').addEventListener('change',async e=>{
+ batchFiles=[...(e.target.files||[])];
+ $('batchInfo').textContent=batchFiles.length?`${batchFiles.length} photo${batchFiles.length===1?'':'s'} selected for batch editing.`:'No batch selected.';
+ $('exportBatch').disabled=batchFiles.length===0;
+ if(batchFiles.length) await load(batchFiles[0]);
+});
 controls.forEach(id=>$(id).addEventListener('input',()=>{labels();render()}));
-
-$('save').addEventListener('click',()=>{if(!fullSource)return;status('Rendering full-resolution JPEG…');setTimeout(()=>{const out=document.createElement('canvas');renderTo(out,fullSource);out.toBlob(blob=>{if(!blob){status('Export failed.');return}const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=filename+'-luma.jpg';a.click();setTimeout(()=>URL.revokeObjectURL(u),1500);status('Full-resolution JPEG exported.')},'image/jpeg',.96)},20)});
+$('reset').addEventListener('click',()=>{for(const [k,v] of Object.entries(defaults))$(k).value=v;labels();render()});
+$('save').addEventListener('click',()=>{if(!fullSource)return;status('Rendering full-resolution JPEG…');setTimeout(()=>{const out=document.createElement('canvas');renderTo(out,fullSource);out.toBlob(blob=>{if(!blob){status('Export failed.');return}const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=filename+'-film-lab.jpg';a.click();setTimeout(()=>URL.revokeObjectURL(u),1500);status('Full-resolution JPEG exported.')},'image/jpeg',.96)},20)});
 function applyStyle(name){
  currentStyle=name;
  const preset=presets[name];
@@ -260,85 +240,80 @@ function applyStyle(name){
  document.querySelectorAll('.style-btn').forEach(b=>{const active=b.dataset.style===name;b.classList.toggle('active',active);b.classList.toggle('secondary',!active)});
  $('styleDescription').textContent=descriptions[name];
  const cap={portra:'FILM LOOK',natural:'A LOOK',bw:'CLASSIC BLACK & WHITE',green:'GREEN VIBE'};
- $('viewLabel').textContent=cap[name];
+ document.querySelector('#after').previousElementSibling.textContent='AFTER · '+cap[name];
  labels();render();
 }
 document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()=>applyStyle(b.dataset.style)));
 $('reset').addEventListener('click',()=>applyStyle('portra'));
 labels();
 
-// Zoom, pan, trackpad pinch, and press-and-hold before/after.
-const viewport=$('imageViewport'),transform=$('imageTransform');
-let zoom=1,panX=0,panY=0,holding=false,dragging=false,moved=false,startX=0,startY=0,originX=0,originY=0,holdTimer=null;
-function updateView(){transform.style.transform=`translate(${panX}px,${panY}px) scale(${zoom})`;viewport.classList.toggle('zoomed',zoom>1.01);$('zoomLabel').textContent=zoom<=1.01?'Fit · hold for original':Math.round(zoom*100)+'% · drag to pan';}
-function setZoom(next){zoom=Math.max(1,Math.min(8,next));if(zoom===1){panX=0;panY=0;}updateView();}
-function showBefore(){if(!source||holding)return;holding=true;$('after').src=$('before').src;}
-function showAfter(){if(!holding)return;holding=false;render();}
-viewport.addEventListener('dblclick',e=>{e.preventDefault();setZoom(zoom>1.01?1:2);});
-viewport.addEventListener('pointerdown',e=>{if(e.button!==0)return;startX=e.clientX;startY=e.clientY;originX=panX;originY=panY;moved=false;dragging=true;viewport.setPointerCapture(e.pointerId);holdTimer=setTimeout(()=>{if(!moved)showBefore()},180);});
-viewport.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-startX,dy=e.clientY-startY;if(Math.hypot(dx,dy)>7){moved=true;clearTimeout(holdTimer);showAfter();}if(zoom>1&&moved){panX=originX+dx;panY=originY+dy;viewport.classList.add('dragging');updateView();}});
-function endPointer(){dragging=false;clearTimeout(holdTimer);viewport.classList.remove('dragging');showAfter();}
-viewport.addEventListener('pointerup',endPointer);viewport.addEventListener('pointercancel',endPointer);viewport.addEventListener('lostpointercapture',endPointer);
-viewport.addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){e.preventDefault();setZoom(zoom*Math.exp(-e.deltaY*.012));}},{passive:false});
-$('fitButton').addEventListener('click',()=>setZoom(1));$('zoomIn').addEventListener('click',()=>setZoom(zoom*1.5));$('zoomOut').addEventListener('click',()=>setZoom(zoom/1.5));
-let pinchDistance=0;
-viewport.addEventListener('touchstart',e=>{if(e.touches.length===2){pinchDistance=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);clearTimeout(holdTimer);showAfter();}},{passive:true});
-viewport.addEventListener('touchmove',e=>{if(e.touches.length===2&&pinchDistance){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);setZoom(zoom*d/pinchDistance);pinchDistance=d;}},{passive:true});
-viewport.addEventListener('touchend',()=>{pinchDistance=0;});
-applyStyle('natural');
-
-
-</script>
-<script>
-(function(){
- const layout=document.querySelector('.layout'),adjust=document.querySelector('.adjustments'),looks=document.querySelector('.looks');
- if(!layout||!adjust||!looks)return;
- const bar=document.querySelector('.mobile-toolstrip'),buttons=[...bar.querySelectorAll('[data-mobile-panel]')],sections=[...adjust.querySelectorAll(':scope > .panel')];
- let active=null;
- function close(){active=null;adjust.classList.remove('mobile-open');looks.classList.remove('mobile-open');sections.forEach(p=>p.classList.remove('mobile-section-active'));buttons.forEach(b=>b.classList.remove('selected'));}
- buttons.forEach(btn=>btn.addEventListener('click',()=>{
-  const choice=btn.dataset.mobilePanel;if(active===choice){close();return}
-  close();active=choice;btn.classList.add('selected');
-  if(choice==='looks')looks.classList.add('mobile-open');
-  else{adjust.classList.add('mobile-open');sections[Number(choice)]?.classList.add('mobile-section-active')}
- }));
- looks.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()=>{if(matchMedia('(max-width:800px)').matches)close()}));
- const compare=document.getElementById('mobileCompare'),after=document.getElementById('after'),before=document.getElementById('before');
- let held=false;
- function show(e){
-  if(e?.pointerType==='mouse'&&e.button!==0)return;
-  if(e?.cancelable)e.preventDefault();
-  if(held)return;held=true;compare.classList.add('is-held');compare.setAttribute('aria-label','Original photo showing');
-  after.src=before.src;
-  if(e?.pointerId!=null)try{compare.setPointerCapture(e.pointerId)}catch(_){}
- }
- function hide(){
-  if(!held)return;held=false;compare.classList.remove('is-held');compare.setAttribute('aria-label','Hold to see original photo');
-  if(typeof render==='function')render();
- }
- compare.addEventListener('pointerdown',show);
- compare.addEventListener('pointerup',hide);
- compare.addEventListener('pointercancel',hide);
- compare.addEventListener('lostpointercapture',hide);
- window.addEventListener('blur',hide);
- compare.addEventListener('contextmenu',e=>e.preventDefault());
- // Keep image visible when iOS browser changes viewport height.
- window.addEventListener('resize',()=>{if(innerWidth>800)close()});
-})();
-</script>
-<script id="luma-frame-switch">
-(function(){
- const viewport=document.getElementById('imageViewport');
- if(!viewport)return;
- const colours=['white','grey','black'];
- let selected=0;
- viewport.dataset.frame=colours[selected];
- viewport.title='Right-click to change preview frame: white, grey, black';
- viewport.addEventListener('contextmenu',function(e){
-   e.preventDefault();
-   selected=(selected+1)%colours.length;
-   viewport.dataset.frame=colours[selected];
+function readStore(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')??fallback}catch(e){return fallback}}
+function writeStore(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch(e){status('Browser storage is unavailable. Your changes will last only until this page closes.');return false}}
+function currentValues(){return Object.fromEntries(controls.map(k=>[k,+$(k).value]))}
+function refreshSaved(){
+ const list=$('savedPresets');list.innerHTML='';
+ const saved=readStore('filmlab_saved_presets',[]);
+ const favs=readStore('filmlab_favourites',[]);
+ if(!saved.length&&!favs.length){list.textContent='No custom looks or favourites saved yet.';return}
+ favs.forEach(name=>{
+  const b=document.createElement('button');b.className='saved-chip';b.type='button';b.textContent='★ '+name;
+  b.addEventListener('click',()=>{const p=saved.find(x=>x.name===name);if(p){applyCustom(p);}});
+  list.appendChild(b);
  });
-})();
-</script>
-</body></html>
+ saved.forEach(p=>{
+  const b=document.createElement('button');b.className='saved-chip';b.type='button';b.textContent='Use '+p.name;
+  b.addEventListener('click',()=>applyCustom(p));list.appendChild(b);
+ });
+}
+function applyCustom(p){
+ currentStyle='custom';
+ for(const id of controls) if(p.values[id]!==undefined)$(id).value=p.values[id];
+ document.querySelectorAll('.style-btn').forEach(b=>{b.classList.remove('active');b.classList.add('secondary')});
+ $('styleDescription').textContent='Custom look: '+p.name;
+ $('after').previousElementSibling.textContent='AFTER · '+p.name.toUpperCase();
+ labels();render();status('Applied saved look: '+p.name);
+}
+$('savePreset').addEventListener('click',()=>{
+ const name=prompt('Name this custom look:');if(!name||!name.trim())return;
+ const saved=readStore('filmlab_saved_presets',[]);
+ saved.unshift({name:name.trim(),values:currentValues()});
+ writeStore('filmlab_saved_presets',saved.slice(0,30));refreshSaved();status('Saved custom look: '+name.trim());
+});
+$('toggleFavourite').addEventListener('click',()=>{
+ const name=currentStyle==='custom'?'Custom look':currentStyle==='natural'?'A Look':currentStyle==='bw'?'Classic Black & White':currentStyle==='green'?'Green Vibe':'Film';
+ const favs=readStore('filmlab_favourites',[]),i=favs.indexOf(name);
+ if(i>=0)favs.splice(i,1);else favs.push(name);
+ writeStore('filmlab_favourites',favs);
+ $('toggleFavourite').textContent=(favs.includes(name)?'★ Remove ':'☆ Add ')+name+(favs.includes(name)?' from favourites':' to favourites');
+ refreshSaved();status(favs.includes(name)?name+' added to favourites.':name+' removed from favourites.');
+});
+function currentBatchSettings(){return currentValues()}
+$('exportBatch').addEventListener('click',async()=>{
+ if(!batchFiles.length)return;
+ const settings=currentBatchSettings(),old=currentValues(),oldStyle=currentStyle;
+ const btn=$('exportBatch');btn.disabled=true;
+ try{
+  for(let i=0;i<batchFiles.length;i++){
+   status(`Batch export: processing ${i+1} of ${batchFiles.length}…`);
+   let bmp;
+   const f=batchFiles[i],nm=(f.name||'').toLowerCase(),ty=(f.type||'').toLowerCase();
+   if(ty.includes('heic')||ty.includes('heif')||/\.hei[cf]$/.test(nm))bmp=await loadHeif(f);
+   else bmp=await createImageBitmap(f);
+   for(const [k,v] of Object.entries(settings))$(k).value=v;
+   const out=document.createElement('canvas');renderTo(out,bmp);
+   const blob=await new Promise(resolve=>out.toBlob(resolve,'image/jpeg',.96));
+   if(blob){
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=(f.name||'photo').replace(/\.[^.]+$/,'')+'-film-lab.jpg';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+   }
+   if(bmp.close)bmp.close();
+   await new Promise(resolve=>setTimeout(resolve,350));
+  }
+  status(`Finished batch export of ${batchFiles.length} photos. Your browser may ask you to allow multiple downloads.`);
+ }catch(err){status('Batch export stopped: '+(err.message||'could not process a photo'))}
+ finally{for(const [k,v] of Object.entries(old))$(k).value=v;currentStyle=oldStyle;labels();render();btn.disabled=false;}
+});
+refreshSaved();
+
+</script></body></html>
