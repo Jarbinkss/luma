@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///Users/jaredyeoward/Downloads/FilmLab_Mobile_Cohesive_v2.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Luma — Film Looks</title>
+<style>
+:root{color-scheme:dark;--bg:#101214;--panel:#1b2023;--line:#343b40;--ink:#f4f1eb;--muted:#aeb7bb;--accent:#d9bd9b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:1080px;margin:auto;padding:24px 16px 48px}h1{font-size:27px;margin:0}p{color:var(--muted);margin:6px 0 18px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:16px;margin:14px 0}
+input[type=file]{width:100%;padding:12px;border:1px dashed #fff;border-radius:10px;color:var(--muted);background:#151719}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}figure{margin:0;min-width:0}figure img{width:100%;height:auto;max-height:65vh;object-fit:contain;background:#08090a;border:2px solid #fff;border-radius:9px;display:block}figcaption{font-size:12px;letter-spacing:.06em;color:var(--muted);margin:0 0 7px}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px 20px}.control{padding:8px 0}label{display:flex;justify-content:space-between;gap:10px;font-size:14px;margin-bottom:5px}output{color:var(--accent);font-variant-numeric:tabular-nums}input[type=range]{width:100%;accent-color:var(--accent)}
+.styles{display:flex;flex-wrap:wrap;gap:9px}.style-btn{min-width:145px}.style-btn.active{outline:2px solid #f4f1eb;outline-offset:2px}.style-description{margin:12px 0 0;font-size:13px}button{background:var(--accent);color:#171513;border:0;border-radius:9px;padding:11px 15px;font-weight:700;font-size:14px;cursor:pointer}.secondary{background:#343b40;color:var(--ink)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.status{font-size:14px;color:var(--muted);min-height:22px}.tag{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:3px 9px;font-size:12px;color:#d7c6b2;vertical-align:middle}
+h2{font-size:16px;margin:0 0 8px}small{color:var(--muted)}[hidden]{display:none!important}
+
+.saved-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.saved-chip{background:#343b40;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:8px 12px}
+.batch-box{border-top:1px solid var(--line);margin-top:16px;padding-top:14px}
+button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:600px){
+ main{padding:12px 10px 30px;max-width:620px}h1{font-size:24px}
+ .panel{padding:13px;margin:10px 0;border-radius:13px}
+ .grid{grid-template-columns:1fr;gap:18px}
+ figure img{max-height:none;border-width:2px;border-color:#fff}
+ .controls{grid-template-columns:1fr;gap:2px}.control{padding:10px 0}
+ .styles{display:grid;grid-template-columns:1fr 1fr}
+ .style-btn{min-width:0;width:100%;padding:13px 8px}
+ .actions{display:grid;grid-template-columns:1fr}
+ .actions button{width:100%;min-height:44px}
+ input[type=file]{min-height:48px}
+}
+
+/* Luma presentation: leave the image processing and editor controls unchanged. */
+figure img{border:0;border-radius:3px;background:#fff;padding:9px;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.compare-switch{display:none;gap:5px;background:#101214;padding:5px;border-radius:12px;margin-bottom:12px}
+.compare-switch button{flex:1;background:transparent;color:#aeb7bb;border-radius:9px;padding:11px 12px}
+.compare-switch button.compare-active{background:#d9bd9b;color:#171513}
+@media(max-width:600px){
+ body{font-size:15px}main{padding:12px 12px 34px}
+ .compare-switch{display:flex}
+ #photoCompare{display:block}
+ #photoCompare figure{display:none}
+ #photoCompare.show-after figure:nth-child(2){display:block}
+ #photoCompare.show-before figure:nth-child(1){display:block}
+ #photoCompare figure img{max-height:60vh;width:100%;object-fit:contain;padding:9px}
+ #photoCompare figcaption{font-size:11px;margin-bottom:9px}
+ button{touch-action:manipulation}
+}
+</style></head>
+<body><main>
+<h1>Luma <span class="tag">Four film looks</span></h1>
+<p>Your Luma film look. Upload JPEG, PNG, WebP or iPhone HEIC/HEIF photos, compare before and after, then export a full-resolution JPEG.</p>
+<section class="panel">
+<label for="photo">Choose a photo — JPEG, PNG, WebP or HEIC/HEIF</label>
+<input id="photo" type="file" accept="image/*,.heic,.heif" multiple="">
+<div id="status" class="status" aria-live="polite">Choose a photo to start editing.</div>
+</section>
+
+<section class="panel" id="quickTools">
+  <h2>Your Film Lab tools</h2>
+  <div class="actions">
+    <button id="savePreset" type="button">Save current look</button>
+    <button id="toggleFavourite" class="secondary" type="button">☆ Add current look to favourites</button>
+  </div>
+  <div id="savedPresets" class="saved-list" aria-live="polite">No custom looks or favourites saved yet.</div>
+  <div class="batch-box">
+    <strong>Batch editing</strong>
+    <p class="style-description">Select several photos above, choose a look, then export the whole set with the same settings.</p>
+    <div id="batchInfo" class="status">1 photo selected for batch editing.</div>
+    <button id="exportBatch" class="secondary" type="button">Export all selected photos</button>
+  </div>
+</section>
+<section id="workspace" hidden>
+<div class="panel">
+<div class="compare-switch" role="group" aria-label="Photo comparison"><button type="button" id="showAfter" class="compare-active" aria-pressed="true">After</button><button type="button" id="showBefore" aria-pressed="false">Before</button></div>
+<div class="grid" id="photoCompare">
+<figure><figcaption>BEFORE · ORIGINAL</figcaption><img id="before" alt="Original photo" src=""></figure>
+<figure><figcaption>AFTER · A LOOK</figcaption><img id="after" alt="Film-look edited photo" src=""></figure>
+</div>
+<div class="actions"><button id="save">Export edited JPEG</button><button class="secondary" id="reset">Reset adjustments</button></div>
+</div>
+
+<div class="panel">
+<h2>Choose your film look</h2>
+<div class="styles" role="group" aria-label="Film looks">
+<button type="button" class="style-btn secondary" data-style="portra">Film</button>
+<button type="button" class="style-btn secondary" data-style="bw">Classic Black &amp; White</button>
+<button type="button" class="style-btn active" data-style="natural">A Look</button>
+<button type="button" class="style-btn secondary" data-style="green">Green Vibe</button>
+</div>
+<p class="style-description" id="styleDescription">A Look: a slightly bluer 3850 K balance with +62 tint, controlled colour, defined contrast and restrained grain.</p>
+</div>
+<div class="panel">
+<h2>Look strength</h2>
+<div class="control"><label for="opacity">Film look opacity <output>100%</output></label><input id="opacity" type="range" min="0" max="100" value="100"></div>
+</div>
+<div class="panel">
+<h2>Light</h2><div class="controls">
+<div class="control"><label for="exposure">Exposure <output>.00</output></label><input id="exposure" type="range" min="-100" max="100" value="-1"></div>
+<div class="control"><label for="contrast">Contrast <output>+16</output></label><input id="contrast" type="range" min="-100" max="100" value="3"></div>
+<div class="control"><label for="highlights">Highlights <output>-18</output></label><input id="highlights" type="range" min="-100" max="100" value="0"></div>
+<div class="control"><label for="shadows">Shadows <output>-26</output></label><input id="shadows" type="range" min="-100" max="100" value="-47"></div>
+<div class="control"><label for="whites">Whites <output>+12</output></label><input id="whites" type="range" min="-100" max="100" value="0"></div>
+<div class="control"><label for="blacks">Blacks <output>-14</output></label><input id="blacks" type="range" min="-100" max="100" value="-7"></div>
+</div></div>
+<div class="panel">
+<h2>Colour</h2><div class="controls">
+<div class="control"><label for="temperature">Temperature <output>3850 K</output></label><input id="temperature" type="range" min="2000" max="12000" value="6489"></div>
+<div class="control"><label for="tint">Tint <output>+62</output></label><input id="tint" type="range" min="-100" max="100" value="58"></div>
+<div class="control"><label for="vibrance">Vibrance <output>-1</output></label><input id="vibrance" type="range" min="-100" max="100" value="2"></div>
+<div class="control"><label for="saturation">Saturation <output>-2</output></label><input id="saturation" type="range" min="-100" max="100" value="3"></div>
+<div class="control"><label for="yellowLum">Yellow luminance <output>0</output></label><input id="yellowLum" type="range" min="-100" max="100" value="5"></div>
+</div></div>
+<div class="panel">
+<h2>RGB point-curve adjustments</h2>
+<small>Approximate channel-curve controls based on the screenshot. The exact curve points aren't visible in the reference, so these are adjustable channel shaping controls.</small>
+<div class="controls">
+<div class="control"><label for="redCurve">Red curve <output>+6</output></label><input id="redCurve" type="range" min="-50" max="50" value="7"></div>
+<div class="control"><label for="greenCurve">Green curve <output>-6</output></label><input id="greenCurve" type="range" min="-50" max="50" value="0"></div>
+<div class="control"><label for="blueCurve">Blue curve <output>+2</output></label><input id="blueCurve" type="range" min="-50" max="50" value="-8"></div>
+</div></div>
+<div class="panel">
+<h2>Grain</h2><div class="controls">
+<div class="control"><label for="grain">Amount <output>+18</output></label><input id="grain" type="range" min="0" max="100" value="32"></div>
+<div class="control"><label for="grainSize">Size <output>+34</output></label><input id="grainSize" type="range" min="0" max="100" value="37"></div>
+<div class="control"><label for="roughness">Roughness <output>+42</output></label><input id="roughness" type="range" min="0" max="100" value="49"></div>
+</div></div>
+</section>
+<canvas id="canvas" hidden="" width="788" height="1400"></canvas>
+<p><small>HEIC/HEIF files are decoded in your browser using a modern HEIF decoder when native browser support is unavailable. An internet connection is needed to load the decoder the first time. Your photo stays on your device.</small></p>
+</main>
+<script>
+const $=id=>document.getElementById(id),canvas=$('canvas');
+const controls=['opacity','exposure','contrast','highlights','shadows','whites','blacks','temperature','tint','vibrance','saturation','yellowLum','redCurve','greenCurve','blueCurve','grain','grainSize','roughness'];
+const defaults={opacity:100,exposure:-1,contrast:3,highlights:0,shadows:-47,whites:0,blacks:-7,temperature:6489,tint:58,vibrance:2,saturation:3,yellowLum:5,redCurve:7,greenCurve:0,blueCurve:-8,grain:32,grainSize:37,roughness:49};
+const presets={
+ portra:{...defaults},
+ natural:{...defaults,exposure:0.03,contrast:16,highlights:-18,shadows:-26,whites:12,blacks:-14,temperature:3850,tint:62,vibrance:-1,saturation:-2,yellowLum:0,redCurve:6,greenCurve:-6,blueCurve:2,grain:18,grainSize:34,roughness:42},
+ bw:{...defaults,exposure:0,contrast:24,shadows:-28,whites:12,blacks:-18,temperature:5500,tint:0,vibrance:-100,saturation:-100,yellowLum:0,redCurve:0,greenCurve:0,blueCurve:0,grain:24,grainSize:42,roughness:55},
+ green:{...defaults,exposure:2,contrast:16,highlights:-7,shadows:-11,whites:4,blacks:13,temperature:5072,tint:71,vibrance:-3,saturation:-8,yellowLum:-8,redCurve:-24,greenCurve:1,blueCurve:-5,grain:20,grainSize:34,roughness:48}
+};
+const descriptions={portra:'Film: a soft, warm colour look with gentle contrast and film grain.',natural:'A Look: a slightly bluer 3850 K balance with +62 tint, controlled colour, defined contrast and restrained grain.',bw:'Timeless monochrome with deeper blacks, crisp midtone contrast and subtle grain.',green:'Green Vibe: subtle green-leaning colour character with controlled saturation, defined contrast and textured grain, based on your latest slider settings.'};
+let source=null,fullSource=null,filename='photo',queued=false,currentStyle='portra';
+function status(t){$('status').textContent=t}
+function clamp(x){return Math.max(0,Math.min(1,x))}
+function signed(n){return (n>0?'+':'')+n}
+function labels(){for(const id of controls){const o=$(id).parentElement.querySelector('output'),v=+$ (id).value;
+ let t=String(v);
+ if(['exposure'].includes(id))t=(v/100).toFixed(2).replace(/^(-?)0\./,'$1.');
+ else if(['temperature'].includes(id))t=v+' K';
+ else if(['opacity'].includes(id))t=v+'%';
+ else t=signed(v);
+ o.textContent=t;
+}}
+function renderTo(c,imSource){
+ const w=imSource.width,h=imSource.height;c.width=w;c.height=h;
+ const cx=c.getContext('2d',{willReadFrequently:true});cx.drawImage(imSource,0,0,w,h);
+ const im=cx.getImageData(0,0,w,h),d=im.data,v=Object.fromEntries(controls.map(k=>[k,+$(k).value]));
+ const mix=v.opacity/100,ex=Math.pow(2,v.exposure/100),con=1+v.contrast/100;
+ const temp=(v.temperature-5500)/4500, tint=v.tint/100;
+ const sat=1+v.saturation/100, vib=1+v.vibrance/100;
+ const curve=(x,amt)=>{const a=amt/100;return clamp(x + a*(x*(1-x)*1.6 - (1-x)*.12));};
+ const grainAmt=v.grain/100, grainScale=.25+(v.grainSize/100)*1.5, rough=v.roughness/100;
+ for(let i=0;i<d.length;i+=4){
+  const orig=[d[i]/255,d[i+1]/255,d[i+2]/255];
+  let [r,g,b]=orig.map(x=>x*ex);
+  let y=.2126*r+.7152*g+.0722*b;
+  // Screenshot-derived tonal recipe: deep shadows, lifted black point, open whites.
+  const shadowW=Math.pow(Math.max(0,1-y),2), highW=Math.pow(Math.max(0,y-.45),2);
+  const blackLift=v.blacks/100*.10, shadowDelta=v.shadows/100*.16*shadowW;
+  const whiteDelta=v.whites/100*.12*Math.pow(y,2), highDelta=v.highlights/100*.12*highW;
+  r+=blackLift+shadowDelta+whiteDelta+highDelta;
+  g+=blackLift+shadowDelta+whiteDelta+highDelta;
+  b+=blackLift+shadowDelta+whiteDelta+highDelta;
+  r=.5+(r-.5)*con;g=.5+(g-.5)*con;b=.5+(b-.5)*con;
+  // Subtle tint influence with a restrained warm highlight shoulder; avoid a heavy green cast.
+  r+=temp*.045*(.35+y)+.012*highW+.004;
+  g+=tint*.010;
+  b-=temp*.045*(.35+y)+tint*.012;
+  // Individual channel point-curve shaping.
+  r=curve(clamp(r),v.redCurve);g=curve(clamp(g),v.greenCurve);b=curve(clamp(b),v.blueCurve);
+  // Yellow luminance: target yellow/orange hues without lifting every colour.
+  const max=Math.max(r,g,b),min=Math.min(r,g,b),yellow=Math.max(0,1-Math.abs((r-g))/.35)*Math.max(0,1-Math.abs((b-(r+g)/2))/.45);
+  const yl=v.yellowLum/100*.18*yellow;
+  r+=yl;g+=yl;b-=yl*.20;
+  const lum=.2126*r+.7152*g+.0722*b,avg=(r+g+b)/3;
+  const chroma=Math.max(r,g,b)-Math.min(r,g,b);
+  const satFactor=sat*(1+(vib-1)*(1-Math.min(1,chroma*2)));
+  r=lum+(r-lum)*satFactor;g=lum+(g-lum)*satFactor;b=lum+(b-lum)*satFactor;
+  // Fine luminance grain; size/roughness alter its character.
+  const n=(Math.random()-.5)*grainAmt*(.035+grainScale*.012)*(0.55+rough);
+  if(currentStyle==='bw'){const mono=.2126*r+.7152*g+.0722*b;r=mono;g=mono;b=mono;}
+  const out=[r+n,g+n,b+n];
+  for(let k=0;k<3;k++)d[i+k]=Math.round(255*clamp(orig[k]+(clamp(out[k])-orig[k])*mix));
+ }
+ cx.putImageData(im,0,0);
+}
+function render(){if(!source||queued)return;queued=true;requestAnimationFrame(()=>{queued=false;renderTo(canvas,source);$('after').src=canvas.toDataURL('image/jpeg',.9)})}
+
+async function decodeForIPhone(blob){
+ const url=URL.createObjectURL(blob);
+ try{
+  const img=new Image();
+  await new Promise((resolve,reject)=>{
+   img.onload=resolve;
+   img.onerror=()=>reject(new Error('The photo could not be opened. Try a JPEG.'));
+   img.src=url;
+   if(img.complete && img.naturalWidth)resolve();
+  });
+  return img;
+ } finally { URL.revokeObjectURL(url); }
+}
+
+async function loadHeif(file){
+ // Prefer the browser's native decoder. Some iPhone HEIC variants need a newer HEIF codec.
+ try { return await decodeForIPhone(file); } catch(nativeError) {}
+ const loadScript=(url)=>new Promise((resolve,reject)=>{
+  const existing=[...document.scripts].find(x=>x.src===url);
+  if(existing){if(existing.dataset.loaded==='yes')return resolve();existing.addEventListener('load',resolve,{once:true});existing.addEventListener('error',()=>reject(Error('Decoder download failed')),{once:true});return;}
+  const sc=document.createElement('script');sc.src=url;sc.onload=()=>{sc.dataset.loaded='yes';resolve()};sc.onerror=()=>reject(Error('Could not download HEIC decoder. Check your internet connection.'));document.head.appendChild(sc);
+ });
+ // Current decoder tracks newer libheif releases and handles newer iPhone HEIC files.
+ try{
+  if(typeof window.HeicTo!=='function') await loadScript('https://cdn.jsdelivr.net/npm/heic-to@1.6.7/dist/iife/heic-to.js');
+  if(typeof window.HeicTo==='function'){
+   const jpeg=await window.HeicTo({blob:file,type:'image/jpeg',quality:.96});
+   return await decodeForIPhone(jpeg);
+  }
+ }catch(modernError){}
+ // Older fallback for unusual HEIF variants.
+ try{
+  if(typeof window.heic2any!=='function') await loadScript('https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js');
+  if(typeof window.heic2any==='function'){
+   let jpeg=await window.heic2any({blob:file,toType:'image/jpeg',quality:.96});
+   if(Array.isArray(jpeg))jpeg=jpeg[0];
+   return await decodeForIPhone(jpeg);
+  }
+ }catch(legacyError){}
+ throw Error('This HEIC/HEIF file could not be decoded. Try exporting it as JPEG from Photos, or check that you are online so the HEIC decoder can load.');
+}
+async function load(file){
+ if(!file)return;source=null;$('workspace').hidden=true;status('Loading photo…');
+ try{
+  let bmp;
+  const nm=(file.name||'').toLowerCase(),ty=(file.type||'').toLowerCase();
+  const isHeif=ty.includes('heic')||ty.includes('heif')||/\.hei[cf]$/.test(nm);
+  if(isHeif){status('Opening iPhone HEIC photo…');bmp=await loadHeif(file);}
+  else {bmp=await decodeForIPhone(file);}
+  fullSource=bmp;filename=(file.name||'photo').replace(/\.[^.]+$/,'');
+  const scale=Math.min(1,1400/Math.max(bmp.width,bmp.height)),small=document.createElement('canvas');
+  small.width=Math.max(1,Math.round(bmp.width*scale));small.height=Math.max(1,Math.round(bmp.height*scale));
+  small.getContext('2d').drawImage(bmp,0,0,small.width,small.height);source=small;
+  $('before').src=small.toDataURL('image/jpeg',.9);$('workspace').hidden=false;labels();render();status('Loaded. Your latest screenshot settings are applied at 100% opacity.');
+ }catch(e){status('Could not open photo: '+(e.message||'unsupported format'))}
+}
+
+let batchFiles=[];
+$('photo').addEventListener('change',async e=>{
+ batchFiles=[...(e.target.files||[])];
+ $('batchInfo').textContent=batchFiles.length?`${batchFiles.length} photo${batchFiles.length===1?'':'s'} selected for batch editing.`:'No batch selected.';
+ $('exportBatch').disabled=batchFiles.length===0;
+ if(batchFiles.length) await load(batchFiles[0]);
+});
+controls.forEach(id=>$(id).addEventListener('input',()=>{labels();render()}));
+$('reset').addEventListener('click',()=>{for(const [k,v] of Object.entries(defaults))$(k).value=v;labels();render()});
+$('save').addEventListener('click',()=>{if(!fullSource)return;status('Rendering full-resolution JPEG…');setTimeout(()=>{const out=document.createElement('canvas');renderTo(out,fullSource);out.toBlob(blob=>{if(!blob){status('Export failed.');return}const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=filename+'-film-lab.jpg';a.click();setTimeout(()=>URL.revokeObjectURL(u),1500);status('Full-resolution JPEG exported.')},'image/jpeg',.96)},20)});
+function applyStyle(name){
+ currentStyle=name;
+ const preset=presets[name];
+ for(const id of controls)$(id).value=preset[id];
+ document.querySelectorAll('.style-btn').forEach(b=>{const active=b.dataset.style===name;b.classList.toggle('active',active);b.classList.toggle('secondary',!active)});
+ $('styleDescription').textContent=descriptions[name];
+ const cap={portra:'FILM LOOK',natural:'A LOOK',bw:'CLASSIC BLACK & WHITE',green:'GREEN VIBE'};
+ document.querySelector('#after').previousElementSibling.textContent='AFTER · '+cap[name];
+ labels();render();
+}
+document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()=>applyStyle(b.dataset.style)));
+$('reset').addEventListener('click',()=>applyStyle('portra'));
+labels();
+
+function readStore(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')??fallback}catch(e){return fallback}}
+function writeStore(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch(e){status('Browser storage is unavailable. Your changes will last only until this page closes.');return false}}
+function currentValues(){return Object.fromEntries(controls.map(k=>[k,+$(k).value]))}
+function refreshSaved(){
+ const list=$('savedPresets');list.innerHTML='';
+ const saved=readStore('filmlab_saved_presets',[]);
+ const favs=readStore('filmlab_favourites',[]);
+ if(!saved.length&&!favs.length){list.textContent='No custom looks or favourites saved yet.';return}
+ favs.forEach(name=>{
+  const b=document.createElement('button');b.className='saved-chip';b.type='button';b.textContent='★ '+name;
+  b.addEventListener('click',()=>{const p=saved.find(x=>x.name===name);if(p){applyCustom(p);}});
+  list.appendChild(b);
+ });
+ saved.forEach(p=>{
+  const b=document.createElement('button');b.className='saved-chip';b.type='button';b.textContent='Use '+p.name;
+  b.addEventListener('click',()=>applyCustom(p));list.appendChild(b);
+ });
+}
+function applyCustom(p){
+ currentStyle='custom';
+ for(const id of controls) if(p.values[id]!==undefined)$(id).value=p.values[id];
+ document.querySelectorAll('.style-btn').forEach(b=>{b.classList.remove('active');b.classList.add('secondary')});
+ $('styleDescription').textContent='Custom look: '+p.name;
+ $('after').previousElementSibling.textContent='AFTER · '+p.name.toUpperCase();
+ labels();render();status('Applied saved look: '+p.name);
+}
+$('savePreset').addEventListener('click',()=>{
+ const name=prompt('Name this custom look:');if(!name||!name.trim())return;
+ const saved=readStore('filmlab_saved_presets',[]);
+ saved.unshift({name:name.trim(),values:currentValues()});
+ writeStore('filmlab_saved_presets',saved.slice(0,30));refreshSaved();status('Saved custom look: '+name.trim());
+});
+$('toggleFavourite').addEventListener('click',()=>{
+ const name=currentStyle==='custom'?'Custom look':currentStyle==='natural'?'A Look':currentStyle==='bw'?'Classic Black & White':currentStyle==='green'?'Green Vibe':'Film';
+ const favs=readStore('filmlab_favourites',[]),i=favs.indexOf(name);
+ if(i>=0)favs.splice(i,1);else favs.push(name);
+ writeStore('filmlab_favourites',favs);
+ $('toggleFavourite').textContent=(favs.includes(name)?'★ Remove ':'☆ Add ')+name+(favs.includes(name)?' from favourites':' to favourites');
+ refreshSaved();status(favs.includes(name)?name+' added to favourites.':name+' removed from favourites.');
+});
+function currentBatchSettings(){return currentValues()}
+$('exportBatch').addEventListener('click',async()=>{
+ if(!batchFiles.length)return;
+ const settings=currentBatchSettings(),old=currentValues(),oldStyle=currentStyle;
+ const btn=$('exportBatch');btn.disabled=true;
+ try{
+  for(let i=0;i<batchFiles.length;i++){
+   status(`Batch export: processing ${i+1} of ${batchFiles.length}…`);
+   let bmp;
+   const f=batchFiles[i],nm=(f.name||'').toLowerCase(),ty=(f.type||'').toLowerCase();
+   if(ty.includes('heic')||ty.includes('heif')||/\.hei[cf]$/.test(nm))bmp=await loadHeif(f);
+   else bmp=await decodeForIPhone(f);
+   for(const [k,v] of Object.entries(settings))$(k).value=v;
+   const out=document.createElement('canvas');renderTo(out,bmp);
+   const blob=await new Promise(resolve=>out.toBlob(resolve,'image/jpeg',.96));
+   if(blob){
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=(f.name||'photo').replace(/\.[^.]+$/,'')+'-film-lab.jpg';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+   }
+   if(bmp.close)bmp.close();
+   await new Promise(resolve=>setTimeout(resolve,350));
+  }
+  status(`Finished batch export of ${batchFiles.length} photos. Your browser may ask you to allow multiple downloads.`);
+ }catch(err){status('Batch export stopped: '+(err.message||'could not process a photo'))}
+ finally{for(const [k,v] of Object.entries(old))$(k).value=v;currentStyle=oldStyle;labels();render();btn.disabled=false;}
+});
+refreshSaved();
+
+
+// Phone-friendly Before / After view; both original images and rendering stay intact.
+(function(){
+ const grid=document.getElementById('photoCompare');
+ const before=document.getElementById('showBefore');
+ const after=document.getElementById('showAfter');
+ function select(which){
+  grid.classList.toggle('show-before',which==='before');
+  grid.classList.toggle('show-after',which==='after');
+  before.classList.toggle('compare-active',which==='before');
+  after.classList.toggle('compare-active',which==='after');
+  before.setAttribute('aria-pressed',String(which==='before'));
+  after.setAttribute('aria-pressed',String(which==='after'));
+ }
+ before.addEventListener('click',()=>select('before'));
+ after.addEventListener('click',()=>select('after'));
+ select('after');
+})();
+</script></body></html>
